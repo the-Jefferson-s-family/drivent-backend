@@ -15,4 +15,3 @@ export function createBooking({ roomId, userId }: CreateBookingParams) {
     }
   });
 }
-
