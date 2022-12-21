@@ -59,10 +59,18 @@ async function changeBookingRoomById(userId: number, roomId: number) {
   });
 }
 
+async function bookingsByRoomId(userId: number, roomId: number) {
+  await checkEnrollmentTicket(userId);
+  const bookings = await bookingRepository.findBookingsByRoomId(roomId);
+  
+  return bookings; 
+}
+
 const bookingService = {
   bookingRoomById,
   getBooking,
   changeBookingRoomById,
+  bookingsByRoomId
 };
 
 export default bookingService;
