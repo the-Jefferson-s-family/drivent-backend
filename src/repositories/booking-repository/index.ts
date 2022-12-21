@@ -50,11 +50,20 @@ async function upsertBooking({ id, roomId, userId }: UpdateParams) {
   });
 }
 
+async function findBookingsByRoomId(roomId: number) {
+  return prisma.booking.findMany({
+    where: {
+      roomId: roomId
+    }
+  });
+}
+
 const bookingRepository = {
   create,
   findByRoomId,
   findByUserId,
   upsertBooking,
+  findBookingsByRoomId
 };
 
 export default bookingRepository;
