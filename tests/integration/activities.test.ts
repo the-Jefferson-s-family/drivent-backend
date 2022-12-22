@@ -11,6 +11,7 @@ import {
   createPayment,
   createTicketTypePresential,
   createActivities,
+  createActivitiesSubscription,
 } from "../factories";
 import { cleanDb, generateValidToken } from "../helpers";
 
@@ -58,22 +59,23 @@ describe("GET /activities", () => {
       await createPayment(ticket.id, ticketType.price);
 
       const activities = await createActivities();
-
+      await createActivitiesSubscription(user.id, activities.id);
       const response = await server.get(`/activities/date?date=${activities.date}`).set("Authorization", `Bearer ${token}`);
-      
+
       expect(response.status).toEqual(httpStatus.OK);
-      expect(response.body).toEqual(
-        expect.arrayContaining([
+      expect(response.body).toEqual([
+        expect.objectContaining(
           {
             id: activities.id,
             title: activities.title,
-            vacancies: activities.vacancies,
+            vacancies: activities.vacancies - 1,
             local: activities.local,
             date: activities.date.toISOString(),
             startTime: activities.startTime.toISOString(),
-            finishTime: activities.finishTime.toISOString()
+            finishTime: activities.finishTime.toISOString(),
           }
-        ])
+        )
+      ]
       );
     });
 
@@ -86,7 +88,7 @@ describe("GET /activities", () => {
       await createPayment(ticket.id, ticketType.price);
 
       const response = await server.get(`/activities/date?date=${2}`).set("Authorization", `Bearer ${token}`);
-      
+
       expect(response.status).toEqual(httpStatus.OK);
       expect(response.body).toEqual(expect.arrayContaining([]));
     });
@@ -102,7 +104,7 @@ describe("GET /activities", () => {
       const activities = await createActivities();
 
       const response = await server.get(`/activities/date?date=${activities.date}`).set("Authorization", `Bearer ${token}`);
-      
+
       expect(response.status).toEqual(httpStatus.UNAUTHORIZED);
     });
 
@@ -112,8 +114,21 @@ describe("GET /activities", () => {
       const activities = await createActivities();
 
       const response = await server.get(`/activities/date?date=${activities.date}`).set("Authorization", `Bearer ${token}`);
-      
+
       expect(response.status).toEqual(httpStatus.UNAUTHORIZED);
+    });
+
+    it("should respond with status 404 when date is underfined", async () => {
+      const user = await createUser();
+      const token = await generateValidToken(user);
+      const enrollment = await createEnrollmentWithAddress(user);
+      const ticketType = await createTicketTypePresential();
+      const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
+      await createPayment(ticket.id, ticketType.price);
+
+      const response = await server.get("/activities/date").set("Authorization", `Bearer ${token}`);
+
+      expect(response.status).toEqual(httpStatus.NOT_FOUND);
     });
   });
 });

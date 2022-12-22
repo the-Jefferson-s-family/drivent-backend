@@ -16,10 +16,12 @@ async function getActivities(date: Date, userId: number): Promise<Activities[]> 
   }
   
   const activities = await activitiesRepository.findAllActivities(date);
-  if (!activities) {
-    return [];
-  }
-
+  activities.map( activitie => 
+    activitie.vacancies = (Number(activitie.vacancies) - activitie.ActivitiesSubscription.length)
+  );
+  activities.map( activitie => 
+    delete activitie.ActivitiesSubscription
+  );
   return activities;
 }
 
