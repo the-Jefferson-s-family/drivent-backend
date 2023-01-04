@@ -26,3 +26,27 @@ export async function listActivitiesByDate(req: AuthenticatedRequest, res: Respo
   }
 }
 
+export async function selectNewActivity(req: AuthenticatedRequest, res: Response) {
+  const { userId } = req;
+  const { activitieId } = req.query;
+  try {
+    if(!activitieId) {
+      throw notFoundError();
+    }
+    
+    const { date } =  req.query as { date: string }; 
+    const newDate = dayjs(date);
+    
+    await activitiesService.postSelectNewActivity(Number(userId), Number(activitieId), newDate.toDate());
+    return res.sendStatus(httpStatus.OK);
+  } catch (error) {
+    if(error.name === "UnauthorizedError") {
+      return res.sendStatus(httpStatus.UNAUTHORIZED);
+    }
+    if(error.name === "ConflictError") {
+      return res.sendStatus(httpStatus.CONFLICT);
+    }
+
+    return res.sendStatus(httpStatus.NOT_FOUND);
+  }
+}

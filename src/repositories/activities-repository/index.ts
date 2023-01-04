@@ -11,36 +11,36 @@ async function findAllActivities(date: Date) {
   });
 }
 
-async function findByActivitiesId(actId: number) {
-  return prisma.activities.findMany({
+async function findActivitiesById(actId: number) {
+  return prisma.activities.findFirst({
     where: {
       id: actId,
     },
   });
 }
 
-async function findActivitiesByStartTime(actId: number) {
-  return prisma.activities.findMany({
-    where: {
-      id: actId,
+async function creatActivitiesWithUser(userId: number, activitiesId: number) {
+  return prisma.activitiesSubscription.create({
+    data: {
+      userId,
+      activitiesId,
     },
   });
 }
 
-// async function findByUserId(userId: number) {
-//   return prisma.activities.findFirst({
-//     where: {
-//       userId,
-//     },
-//     include: {
-//       Room: true,
-//     }
-//   });
-// }
+async function findUserActivities(userId: number) {
+  return prisma.activitiesSubscription.findMany({
+    where: {
+      userId
+    }
+  });
+}
 
 const activitiesRepository = {
   findAllActivities,
-  findByActivitiesId
+  findActivitiesById,
+  creatActivitiesWithUser,
+  findUserActivities
 };
 
 export default activitiesRepository;
