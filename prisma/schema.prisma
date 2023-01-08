@@ -149,6 +149,8 @@ model Activities {
   startTime             DateTime                @db.Time(4)
   finishTime            DateTime                @db.Time(4)
   ActivitiesSubscription ActivitiesSubscription[]
+
+  @@index([date], map: "idx_activities_date")
 }
 
 model ActivitiesSubscription {
