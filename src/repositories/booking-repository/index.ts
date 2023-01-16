@@ -50,11 +50,50 @@ async function upsertBooking({ id, roomId, userId }: UpdateParams) {
   });
 }
 
+async function checkValidHotel(id: number) {
+  return prisma.hotel.findUnique({ where: { id } });
+}
+
+async function getRooms(hotelId: number) {
+  return prisma.room.findMany({
+    where: {
+      hotelId
+    },
+    include: {
+      Booking: true
+    }
+  });
+}
+
+async function findBookingsRoom() {
+  return prisma.booking.findMany();
+}
+
+async function findAllBookingsUser(userId: number) {
+  return prisma.booking.findMany({
+    where: {
+      userId
+    },
+    include: {
+      Room: {
+        include: {
+          Hotel: true,
+          Booking: true,
+        }
+      }
+    },
+  });
+}
+
 const bookingRepository = {
   create,
   findByRoomId,
   findByUserId,
   upsertBooking,
+  findBookingsRoom,
+  checkValidHotel,
+  getRooms,
+  findAllBookingsUser
 };
 
 export default bookingRepository;

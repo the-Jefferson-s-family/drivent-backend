@@ -6,3 +6,9 @@ export function cannotListHotelsError(): ApplicationError {
     message: "Cannot list hotels!",
   };
 }
+export function notIncludeHotel(): ApplicationError {
+  return {
+    name: "notIncludeHotel",
+    message: "Does not include hotel"
+  };
+}
