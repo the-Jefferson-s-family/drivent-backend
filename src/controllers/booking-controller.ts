@@ -3,16 +3,15 @@ import { Response } from "express";
 import httpStatus from "http-status";
 import bookingService from "@/services/booking-service";
 
-export async function listBooking(req: AuthenticatedRequest, res: Response) {
+export async function bookingOfUser(req: AuthenticatedRequest, res: Response) {
+  const { userId } = req;
+
   try {
-    const { userId } = req;
-    const booking = await bookingService.getBooking(userId);
-    return res.status(httpStatus.OK).send({
-      id: booking.id,
-      Room: booking.Room,
-    });
+    const booking = await bookingService.getBookingByUserId(userId);
+    return res.status(httpStatus.OK).send(booking);
   } catch (error) {
-    return res.sendStatus(httpStatus.NOT_FOUND);
+    console.log("error get booking of user in listBooking :", error);
+    return res.sendStatus(httpStatus.BAD_REQUEST);
   }
 }
 
@@ -87,4 +86,3 @@ export async function changeBooking(req: AuthenticatedRequest, res: Response) {
     return res.sendStatus(httpStatus.NOT_FOUND);
   }
 }
-
