@@ -12,10 +12,13 @@ export async function getHotels(req: AuthenticatedRequest, res: Response) {
     return res.status(httpStatus.OK).send(hotels);
   } catch (error) {
     if (error.name === "NotFoundError") {
-      return res.sendStatus(httpStatus.NOT_FOUND);
+      return res.sendStatus(httpStatus.NOT_FOUND);  
     }
     if (error.name === "cannotListHotelsError") {
       return res.sendStatus(httpStatus.PAYMENT_REQUIRED);
+    }
+    if (error.name === "notIncludeHotel") {
+      return res.status(httpStatus.PAYMENT_REQUIRED).send({ message: error.message });
     }
     return res.sendStatus(httpStatus.BAD_REQUEST);
   }
