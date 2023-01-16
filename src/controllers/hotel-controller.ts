@@ -8,6 +8,7 @@ export async function getHotels(req: AuthenticatedRequest, res: Response) {
 
   try {
     const hotels = await hotelService.getHotels(Number(userId));
+  
     return res.status(httpStatus.OK).send(hotels);
   } catch (error) {
     if (error.name === "NotFoundError") {
@@ -23,13 +24,12 @@ export async function getHotels(req: AuthenticatedRequest, res: Response) {
   }
 }
 
-export async function getHotelsWithRooms(req: AuthenticatedRequest, res: Response) {
+export async function getHotelWithRooms(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;
   const { hotelId } = req.params;
-
   try {
-    const hotels = await hotelService.getHotelsWithRooms(Number(userId), Number(hotelId));
-
+    const hotels = await hotelService.getHotelWithRooms(Number(userId), Number(hotelId));
+    console.log("hotels com rooms :", hotels);
     return res.status(httpStatus.OK).send(hotels);
   } catch (error) {
     if (error.name === "NotFoundError") {

@@ -75,6 +75,13 @@ async function findBookingsUser(userId: number) {
   return await bookingRepository.findAllBookingsUser(userId);
 }
 
+async function bookingsByRoomId(userId: number, roomId: number) {
+  await checkEnrollmentTicket(userId);
+  const bookings = await bookingRepository.findBookingsByRoomId(roomId);
+  
+  return bookings; 
+}
+
 const bookingService = {
   bookingRoomById,
   getBooking,
@@ -83,6 +90,7 @@ const bookingService = {
   findHotelById,
   getRoomsByIdHotel,
   findBookingsUser,
+  bookingsByRoomId
 };
 
 export default bookingService;
