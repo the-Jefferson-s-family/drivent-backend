@@ -65,12 +65,31 @@ async function bookingsByRoomId(userId: number, roomId: number) {
   
   return bookings; 
 }
+async function findHotelById(id: number) {
+  return await bookingRepository.checkValidHotel(id);
+}
+
+async function getRoomsByIdHotel(hotelId: number) {
+  return await bookingRepository.getRooms(hotelId);
+}
+
+async function findBookings() {
+  return await bookingRepository.findBookingsRoom();
+}
+
+async function findBookingsUser(userId: number) {
+  return await bookingRepository.findAllBookingsUser(userId);
+}
 
 const bookingService = {
   bookingRoomById,
   getBooking,
   changeBookingRoomById,
-  bookingsByRoomId
+  bookingsByRoomId,
+  findBookings,
+  findHotelById,
+  getRoomsByIdHotel,
+  findBookingsUser,
 };
 
 export default bookingService;
