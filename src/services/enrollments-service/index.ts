@@ -34,12 +34,12 @@ async function getAddressFromCEP(cep: string): Promise<AddressEnrollment> {
 
 async function getOneWithAddressByUserId(userId: number): Promise<GetOneWithAddressByUserIdResult> {
   const enrollmentWithAddress = await enrollmentRepository.findWithAddressByUserId(userId);
-
-  if (!enrollmentWithAddress) throw notFoundError();
-
+  if (!enrollmentWithAddress && enrollmentWithAddress !== null) throw notFoundError();
+  
+  if(enrollmentWithAddress === null) return null;
+  
   const [firstAddress] = enrollmentWithAddress.Address;
   const address = getFirstAddress(firstAddress);
-
   return {
     ...exclude(enrollmentWithAddress, "userId", "createdAt", "updatedAt", "Address"),
     ...(!!address && { address }),
